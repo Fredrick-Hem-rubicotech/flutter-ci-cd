@@ -71,7 +71,7 @@ jobs:
         
         #13 Create Release
       - name: Create Release
-        uses: ncipollo/release-action@v1
+        uses: svenstaro/upload-release-action@v2
         with:
-          artifacts: "build/app/outputs/apk/release/app-release.apk"
+          file: "build/app/outputs/apk/release/app-release.apk"
           tag: v${{ env.VERSION }}
