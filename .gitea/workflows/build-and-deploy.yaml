@@ -1,0 +1,26 @@
+name: build-and-deploy
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    name: Build Artifacts and Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: "17.x"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+
+      - run: flutter pub get
+      - run: flutter test
+      
