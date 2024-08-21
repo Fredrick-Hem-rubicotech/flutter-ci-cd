@@ -89,20 +89,32 @@ jobs:
           channel-id: 'C07GVCRDT0E'    
           payload: |
             {
-              "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "GitHub Action build result: *${{ job.status }}*\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|View Details>"
+                    "text": "*GitHub Action Build Result:*\n*Status:* `${{ job.status }}`\n*Details:* <${{ github.event.pull_request.html_url || github.event.head_commit.url }}|Visit here>"
                   }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Repository:*\n <${{github.repositoryUrl}}|${{ github.repository }}>\n"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch:*\n `${{ github.ref }}`\n"
+                    }
+                  ]
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "You can download the APK file from the following link:\n*<${{ steps.upload_apk.outputs.browser_download_url }}|Download APK>*"
+                    "text": "*APK Download Link:*\n<${{ steps.upload_apk.outputs.browser_download_url }}|Download APK>"
                   }
                 },
                 {
@@ -114,7 +126,11 @@ jobs:
                     },
                     {
                       "type": "mrkdwn",
-                      "text": "Commit: ${{ github.sha }}"
+                      "text": "Commit SHA: ${{ github.sha }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "Build ID: ${{ github.run_id }}\n"
                     }
                   ]
                 }
