@@ -71,7 +71,52 @@ jobs:
         
         #13 Create Release
       - name: Create Release
+        id: upload_apk
         uses: svenstaro/upload-release-action@v2
         with:
           file: "build/app/outputs/apk/release/app-release.apk"
           tag: v${{ env.VERSION }}
+
+      - name: Post to a Slack channel
+        if: always()
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_COLOR: ${{ job.status == 'success' && '#36a64f' || '#FF0000' }}  # Ternary operator to set color based on job status
+          JOB_STATUS: ${{ job.status }}
+        with:
+          channel-id: 'C07GVCRDT0E'    
+          payload: |
+            {
+              "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "GitHub Action build result: *${{ job.status }}*\n<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|View Details>"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "You can download the APK file from the following link:\n*<${{ steps.upload_apk.outputs.browser_download_url }}|Download APK>*"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "Triggered by: ${{ github.actor }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "Commit: ${{ github.sha }}"
+                    }
+                  ]
+                }
+              ]
+            }
