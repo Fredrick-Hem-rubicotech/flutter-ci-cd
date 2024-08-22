@@ -3,7 +3,7 @@ name: Print GitHub Context
 on:
   push:
     tags:
-      - "*"
+      - '*'
 
 jobs:
   print-github-context:
